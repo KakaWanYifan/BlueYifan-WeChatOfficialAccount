@@ -28,11 +28,13 @@ namespace FundData
         private Thread thread_Turing;
         private Thread thread_Mars;
         private Thread thread_nCoV;
+        private Thread thread_lc;
 
         private Boolean CanRunFund = true;
         private Boolean CanRunTuring = false;
         private Boolean CanRunMars = false;
         private Boolean CanRunNCOV = false;
+        private Boolean CanRunLC = false;
 
         MySQL msql = new MySQL("blue");
 
@@ -65,7 +67,8 @@ namespace FundData
             thread_Mars.IsBackground = true;
             thread_nCoV = new Thread(new ThreadStart(RefreshNCOV));
             thread_nCoV.IsBackground = true;
-            
+            thread_lc = new Thread(new ThreadStart(RefreshLC));
+            thread_lc.IsBackground = true;
         }
 
         private void b_Start_Click(object sender, EventArgs e)
@@ -88,6 +91,7 @@ namespace FundData
             {
                 thread_nCoV.Abort();
             }
+            thread_lc.Start();
 
         }
 
@@ -154,6 +158,19 @@ namespace FundData
             }
         }
 
+        public void RefreshLC()
+        {
+            while (true)
+            {
+                LC();
+
+                int delay = new Random().Next(500, 1800);
+                delegation d_a = new delegation(GApp_Add);
+                lb_Status.Invoke(d_a, "LC的下次重新部署将在" + delay.ToString() + "秒后");
+                Thread.Sleep(delay * 1000);
+            }
+        }
+
         public void RefreshTuring()
         {
             string com = "update blue.turing set state = '1'";
@@ -216,6 +233,17 @@ namespace FundData
                 lb_Status.Invoke(d_a, "下次更新肺炎数据将在" + delay.ToString() + "秒后");
                 Thread.Sleep(delay * 1000);
             }
+        }
+
+        public void LC()
+        {
+            delegation d_a = new delegation(GApp_Add);
+            String url = "https://leancloud.cn/1.1/engine/groups/web/production/version?gitTag=master&token=cHU2xZZEUggbOJgyK7KrbTpeiGGwMz047Er12F8OztWq5FJptuofM85keflgCt0f";
+            var client = new RestClient(url);
+            client.Timeout = 5000;
+            var request = new RestRequest(Method.POST);
+            IRestResponse response = client.Execute(request);
+            lb_Status.Invoke(d_a, "LC部署完成");
         }
 
         public void NCOV()
@@ -622,6 +650,7 @@ namespace FundData
             b_Start.Enabled = true;
             tssl_Status.Text = "整装待发";
             thread_nCoV.Abort();
+            thread_lc.Abort();
         }
 
         private void b_FundNow_Click(object sender, EventArgs e)
