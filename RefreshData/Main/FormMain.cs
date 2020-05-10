@@ -243,6 +243,7 @@ namespace FundData
             client.Timeout = 5000;
             var request = new RestRequest(Method.POST);
             IRestResponse response = client.Execute(request);
+            lb_Status.Invoke(d_a, response.Content);
             lb_Status.Invoke(d_a, "LC部署完成");
         }
 
