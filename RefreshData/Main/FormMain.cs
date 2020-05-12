@@ -242,6 +242,7 @@ namespace FundData
             if(DateTime.Now.Hour < 7)
             {
                 lb_Status.Invoke(d_a, "零点到七点不提醒");
+                return;
             }
 
             String url = "https://leancloud.cn/1.1/engine/groups/web/production/version?gitTag=master&token=cHU2xZZEUggbOJgyK7KrbTpeiGGwMz047Er12F8OztWq5FJptuofM85keflgCt0f";
