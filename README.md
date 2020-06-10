@@ -7,7 +7,7 @@
 
 就像玩具一样
 
-![](./img/png.png)
+![](http://wanyifan.cn/github/BlueYifan-WeChatOfficialAccount.png)
 
 ## Fund2nd
 Java写的，web应用，用户访问后，请求凤凰网的基金投资组合数据，并返回。
